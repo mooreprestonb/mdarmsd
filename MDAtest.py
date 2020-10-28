@@ -35,10 +35,9 @@ print(A[0].bonds[0])
 
 #all frames
 for ts in u.trajectory:
-    ALP = A.translate(-A.centor_of_mass())
-    rmsdrot = align.rotation_matrix(ALP.posistion,AFPC)[1]
-    rotn = A.translate(center_of_mass())
-    rotn 
-    print (ts.frame,rms.rmsd(ALP,AFP),rms.rmsd(ALPC,AFPC),rmsdrot,rotn)
+    AT = A.translate(-A.center_of_mass())
+    ATrotmat, rmsdrot = align.rotation_matrix(AT.positions,AFPC)
+    ATrot = AT.rotate(ATrotmat)
+    print (ts.frame,rms.rmsd(AT.positions,AFPC),rms.rmsd(ATrot.positions,AFPC),rmsdrot)
 
 
