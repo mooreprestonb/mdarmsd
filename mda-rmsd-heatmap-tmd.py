@@ -10,7 +10,7 @@ from MDAnalysis.analysis.rms import rmsd
 # reftop = "5cg-ff-100ns.pdb"
 
 # Read in topology and trajectories
-trj = MDAnalysis.Universe('5vai-394-c1-glp1-ref.prmtop','receptor-5vai-c1-glp1-100ns.nc')
+trj = MDAnalysis.Universe('5cg-test.prmtop','5cg-test.nc')
 print(trj,len(trj.trajectory))
 print(trj,len(trj.trajectory))
 nframes = len(trj.trajectory)
@@ -32,10 +32,8 @@ nresbb = len(bb.residues)
 #print(nresbb)
 print(len(bb.atoms),len(bb.residues))
 
-ref = MDAnalysis.Universe('../../5vai/5vai-394-ref.prmtop', '../../5vai/receptor-5vai-100ns.nc')
+ref = MDAnalysis.Universe('5cg-test.prmtop','5cg-test.nc')
 #lf = ref.trajectory[-1]
-
-
 
 # Select heavy atoms in first frame reference
 refbb = ref.select_atoms(satom) #######
