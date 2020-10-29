@@ -40,11 +40,10 @@ refbb = ref.select_atoms(satom) #######
 #lf = ref.trajectory[-1] # use last frame instead of first frame
 
 # error check
-if(len(bb.atoms) != len(refbb.atoms)):
+if(len(bb.atoms) != len(refbb.atoms)): # do we have the same number of atoms?
    print("Error: # of atoms selected from trj do not match reference",len(bb.atoms),len(refbb.atoms))
    exit(1)
-   
-if(len(bb.residues) != len(refbb.residues)):
+if(len(bb.residues) != len(refbb.residues)): # do we have the same number of residues
    print("Error: # of residues selected from trj do not match reference",len(bb.residues) != len(refbb.residues))
    exit(1)
 
@@ -61,27 +60,26 @@ fr = 1
 for ires in range(nres+1):
     heatmap[0][ires]=ires # [0] is the first column, [ires] is the first row
 
-for frame in trj.trajectory:
+for frame in trj.trajectory: # loop over configurations in trj
     trj0 = bb.translate(-bb.center_of_mass()) # move atoms to origin
     trj0pos = trj0.positions ####### assign trj0 positions to variable to use during frame iteration
 
     rotmat, rd  = align.rotation_matrix(trj0pos,ref0pos) # calculate rotation matrix for alignment
     trj0 = bb.rotate(rotmat) # do alignment
-    rdr = rmsd(trj0pos,ref0pos) # rmsd translated and rotated,
+    rdr = rmsd(trj0pos,ref0pos) # global rmsd translated and rotated
 
     val[fr] = rd # global rmsd
     heatmap[fr][0] = fr # [fr is frame number] [0th row is residue number]
-    for ires in range(fres, lres+1):
+    for ires in range(fres, lres+1): # loop over residues
         ressel = "resid " + str(ires) # which atoms in residue ires
         refbbres = refbb.select_atoms(ressel) # select reference atoms in residue
         trj0res = trj0.select_atoms(ressel) # select trajectory atoms in trajectory
 
         if(len(refbbres.atoms) > 0): # error check that we have atoms!
-            heatmap[fr][ires] = rmsd(trj0res.positions,refbbres.positions)
+            heatmap[fr][ires] = rmsd(trj0res.positions,refbbres.positions) # calculate the rmsd for this residue.
         else :
             print("Zero atoms in frame",fr," residue ",ires)
             
-    #print(fr, val[fr])
     heatmap[fr][-1] = np.average(heatmap[fr][1:-2]) # get average per res, should be close to global
     print(fr,val[fr],heatmap[fr][-1])
     fr+=1 # next frame
@@ -90,6 +88,7 @@ for frame in trj.trajectory:
 
 print(np.average(val), np.average(heatmap[:,-1]),np.std(val))
 
+# header string
 shead = sys.argv[0] + " " + topfile + " " + trjfile + " vs reference " + reftop + " " + reftrj 
 
 print("Creating average per residue file: ",perresfile)
