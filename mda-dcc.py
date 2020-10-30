@@ -15,7 +15,7 @@ report = 10
 # 163-394 transmembrane domain
 
 fres = 1 # first residue 
-lres = 163 # last residue
+lres = 394 # last residue
 
 # avgfile = "avg.txt"
 dccmapfile = "dccmap.txt"
