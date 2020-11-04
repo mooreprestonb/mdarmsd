@@ -48,8 +48,8 @@ fr = 1
 #loop over frames to get avg pos
 for frame in trj.trajectory: # loop over configurations in trj
    com = bb.center_of_mass()
-   if(report%fr == 0):
-      print(fr,com)
+   if(fr%report == 0):
+      print("Frame of avg calc:",fr,com)
    ival = 0
    for atms in bb:
       avgpos[ival] += atms.position-com
@@ -59,8 +59,11 @@ for frame in trj.trajectory: # loop over configurations in trj
 avgpos /= fr
 #print(avgpos) # removed COM
 
+print("Found average posistions from COM, looping over traj again to find dcc")
 fr = 1  #loop over frames again to get dcc
 for frame in trj.trajectory: # loop over configurations in trj
+   if(fr%report == 0):
+      print("Frame of dcc calc:",fr,com)
    ival = 0
    com = bb.center_of_mass()
    for iatms in bb:
