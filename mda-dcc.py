@@ -18,7 +18,7 @@ fres = 1 # first residue
 lres = 394 # last residue
 
 # avgfile = "avg.txt"
-dccmapfile = "dccmap.txt"
+dccmapfile = "dccmap3.txt"
 
 # Read in topology and trajectories
 trj = MDAnalysis.Universe(topfile,trjfile)  # trajectory
@@ -46,6 +46,7 @@ ri2 = np.zeros(ncatms) # avgpos
 
 fr = 1
 #loop over frames to get avg pos
+print("Getting average positions, report progress ever",report,"configs")
 for frame in trj.trajectory: # loop over configurations in trj
    com = bb.center_of_mass()
    if(fr%report == 0):
@@ -61,20 +62,20 @@ avgpos /= fr
 
 print("Found average posistions from COM, looping over traj again to find dcc")
 fr = 1  #loop over frames again to get dcc
+print("Reporting progress every",report,"configs")
 for frame in trj.trajectory: # loop over configurations in trj
    if(fr%report == 0):
       print("Frame of dcc calc:",fr,com)
-   ival = 0
    com = bb.center_of_mass()
-   for iatms in bb:
-      ri = iatms.position-com -avgpos[ival]
+   for ival in range(len(bb)):
+      ri = bb[ival].position-com -avgpos[ival]
       ri2[ival] += np.dot(ri,ri)
-      jval = 0
-      for jatms in bb:
-         rj = jatms.position-com - avgpos[jval]
-         dccmap[ival][jval] += np.dot(ri,rj)
-         jval += 1
-      ival += 1
+      for jval in range(ival+1):
+         rj = bb[jval].position-com - avgpos[jval]
+         rd = np.dot(ri,rj)
+         dccmap[ival][jval] += rd
+#         if(ival!=jval):
+#            dccmap[jval][ival] += rd
    fr+=1 # next frame
 
 # create output

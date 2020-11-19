@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 
+import sys
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-hm = np.loadtxt('dccmap.txt') # load heatmap into matrix
+mapfile = sys.argv[1]
+#mapfile = "dccmap.txt"
+hm = np.loadtxt(mapfile) # load heatmap into matrix
 
 fig, ax = plt.subplots() # allocate plots
 im = ax.imshow(hm, origin='lower') # 
@@ -20,6 +23,3 @@ ax.set_title("DCC")
 plt.xlabel('Residue Number')
 plt.ylabel('Residue Number')
 plt.show()
-
-
-
