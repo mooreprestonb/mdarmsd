@@ -18,7 +18,7 @@ fres = 1 # first residue
 lres = 394 # last residue
 
 # avgfile = "avg.txt"
-dccmapfile = "dccmap3.txt"
+dccmapfile = "dccmap4.txt"
 
 # Read in topology and trajectories
 trj = MDAnalysis.Universe(topfile,trjfile)  # trajectory
@@ -74,26 +74,22 @@ for frame in trj.trajectory: # loop over configurations in trj
          rj = bb[jval].position-com - avgpos[jval]
          rd = np.dot(ri,rj)
          dccmap[ival][jval] += rd
+#         dccmap[jval][ival] += rd
 #         if(ival!=jval):
 #            dccmap[jval][ival] += rd
    fr+=1 # next frame
 
 # create output
+print("Done:dcc... Normalizing and writing")
 dccmap /= fr
 r2 = np.sqrt(ri2/fr)
 
-ival = 0
-for iatms in bb:
-   jval = 0
-   for jatms in bb:
-      dccmap[ival][jval] /= r2[ival]*r2[jval]
-      jval += 1
-   ival += 1
+for ival in range(len(bb)):
+   for jval in range(ival+1):
+      rn = r2[ival]*r2[jval]
+      dccmap[ival][jval] /= rn
+      dccmap[jval][ival] = dccmap[ival][jval]  # make symmetric
 
 print("Creating dccmap file: ",dccmapfile)
 shead = sys.argv[0] + " " + topfile + " " + trjfile 
 np.savetxt(dccmapfile,dccmap,header=shead,fmt="%g")
-
-
-
-
